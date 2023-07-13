@@ -1,0 +1,52 @@
+server:
+  port: 8082
+  
+logging:
+  level:
+    root: info
+
+  pattern:
+    file:  "%d{yyyy-MM-dd HH:mm:ss} [%thread] %logger{36} %-5level - %msg%n" 
+  file:
+
+
+    name: ../Logs/${spring.application.name}.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - "*"
+      base-path: /pay/actuator    
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    
+spring:
+  application:
+    name: PAYMENT-SERVICE 
+  datasource:
+    url: jdbc:mysql://mysqldb:3306/bbtraining
+    username: root
+    password: bb123
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest 
+     
+
+      

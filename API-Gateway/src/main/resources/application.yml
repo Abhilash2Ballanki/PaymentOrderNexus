@@ -1,0 +1,56 @@
+server:
+  port: 9090
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+spring:
+  application:
+    name: API-GATEWAY
+    
+  cloud:
+    gateway:
+      routes:
+      - id: Security-Service
+        uri: lb://AUTHORIZATION-SERVICE
+        predicates:
+        - Path=/auth/**
+      - id: Order-Service
+        uri: lb://ORDER-SERVICE
+        predicates:
+        - Path=/api/**
+        filters:
+        - AuthorizationFilter
+      - id: Payment-Service
+        uri: lb://PAYMENT-SERVICE
+        predicates:
+        - Path=/pay/**
+        filters:
+        - AuthorizationFilter
+      - id: Message-Service
+        uri: lb://MESSAGE-SERVICE
+        predicates:
+        - Path=/message/**
+        filters:
+        - AuthorizationFilter
+        
+logging:
+  level:
+    root: info
+  pattern:
+    file:  "%d{yyyy-MM-dd HH:mm:ss} [%thread] %logger{36} %-5level [%X{service}] - %msg%n"
+  file:
+    name: ../Logs/${spring.application.name}.log
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - "*"
+      
+      

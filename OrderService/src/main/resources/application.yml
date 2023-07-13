@@ -1,0 +1,54 @@
+server:
+  port: 8081
+  
+logging:
+  level:
+    root: info
+
+  pattern:
+    file:  "%d{yyyy-MM-dd HH:mm:ss} [%thread] %logger{36} %-5level [%X{service}] - %msg%n"
+  file:
+
+
+    name: ../Logs/${spring.application.name}.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - "*"
+      base-path: /api/actuator    
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+    
+spring:
+  application:
+    name: ORDER-SERVICE
+  datasource:
+    url: jdbc:mysql://mysqldb:3306/bbtraining
+    username: root
+    password: bb123
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+resilience4j:
+  ratelimiter:
+    instances:
+      OrderServiceLimiter:
+        limit-refresh-period: 500ns
+        limit-for-period: 10
+        timeout-duration: 2s
+      orderApiLimiter:
+        limit-refresh-period: 2s
+        limit-for-period: 5
+        timeout-duration: 0s
